@@ -7,10 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntColonyConsole", "AntColo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntColonyGUI", "AntColonyGUI\AntColonyGUI.csproj", "{B8403DB3-B333-443D-83B8-B350411B201B}"
 	ProjectSection(ProjectDependencies) = postProject
+		{104D608C-81EF-4110-B0FA-6E78166F93D0} = {104D608C-81EF-4110-B0FA-6E78166F93D0}
 		{CA8C27FA-51DD-4EBB-B1E5-D5A51D867F62} = {CA8C27FA-51DD-4EBB-B1E5-D5A51D867F62}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntColonyLib", "AntColonyLib\AntColonyLib.csproj", "{CA8C27FA-51DD-4EBB-B1E5-D5A51D867F62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DialogManagement", "DialogManagement\DialogManagement.csproj", "{104D608C-81EF-4110-B0FA-6E78166F93D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +33,10 @@ Global
 		{CA8C27FA-51DD-4EBB-B1E5-D5A51D867F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA8C27FA-51DD-4EBB-B1E5-D5A51D867F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA8C27FA-51DD-4EBB-B1E5-D5A51D867F62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

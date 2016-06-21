@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="DialogManagement.WaitProgressDialogControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wa="clr-namespace:DialogManagement"
+             Name="root"
+             Background="WhiteSmoke">
+    <StackPanel
+                VerticalAlignment="Center"
+                DataContext="{Binding ElementName=root}">
+        <wa:WaitAnimation Margin="10"
+                          HorizontalAlignment="Center"
+                          Visibility="{Binding AnimationVisibility}" />
+        <TextBlock Margin="10"
+                   HorizontalAlignment="Center"
+                   Text="{Binding DisplayText}"
+                   TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>

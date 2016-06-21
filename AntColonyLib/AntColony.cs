@@ -8,10 +8,13 @@ namespace AntColonyLib
     public class AntColony
     {
         private static Random random = new Random(0);
-        private static int numCities;
         private Thread thread;
+        /// <summary>
+        /// Количество городов
+        /// </summary>
+        private static int numCities;
 
-        public delegate void InitializationCompletedHandler(int[][] ants,
+        public delegate void InitializationCompletedHandler(
             int[][] dists, int[] bestTrail, double bestDistance);
         /// <summary>
         /// Информирует о завершении инциализации алгоритма.
@@ -20,7 +23,7 @@ namespace AntColonyLib
         /// </summary>
         public event InitializationCompletedHandler InitializationCompletedOn;
         public delegate void FoundNewBestTrailHandler(double bestDistance,
-            int attempt, long timerElapsedMilliseconds);
+            int[] bestTrail, int attempt, long timerElapsedMilliseconds);
         /// <summary>
         /// Информирует о нахождении нового лучшего пути.
         /// Несет лучший маршрут, его длину и затраченное время на поиск в мс.
@@ -61,18 +64,14 @@ namespace AntColonyLib
         /// Значение по умолчанию 9.
         /// </summary>
         public static int scatterED { get; private set; } = 9;
-
-        /// <summary>
-        /// Показывает состояние работы алгоритма.
-        /// </summary>
-        public static bool IsStop { get; private set; } = false;
+        
         /// <summary>
         /// Останавливает работу алгоритма.
         /// </summary>
         public void Stop()
         {
-            if (!IsStop)
-                thread.Abort();
+            thread.Abort();
+            thread.Join(500);
         }
         /// <summary>
         /// Библиотека реализующая алгоритм оптимизации подражанием муравьиной колонии (АСО),
@@ -106,13 +105,18 @@ namespace AntColonyLib
             Q = q;
         }
 
-        public void Start(int numberCities, int numberAnts, int numberAttempts,
+        public void Start()
+        {
+            thread.Start();
+        }
+
+        public void Initialization(int numberCities, int numberAnts, int numberAttempts,
             int scatterStartDistance, int scatterEndDistance)
         {
             if(numberCities <= 0 && numberAnts <= 0 && numberAttempts <= 0 &&
                 scatterStartDistance <= 0 && scatterEndDistance <= 0)
                 throw new AntColonyException("Допускаються только положительные значения переданные методу Start");
-
+            
             numCities = numberCities;
             scatterSD = scatterStartDistance;
             scatterED = scatterEndDistance;
@@ -120,25 +124,18 @@ namespace AntColonyLib
             int[][] dists = MakeGraphDistances(numCities);
             int[][] ants = InitAnts(numberAnts, numCities);
             double[][] pheromones = InitPheromones(numCities);
-            /*
-            double[] distances = new double[ants.Length];
-            for (int i = 0; i <= ants.Length - 1; i++)
-            {
-                distances[i] = Length(ants[i], dists);
-            }*/
+
             int[] bestTrail = BestTrail(ants, dists);
             double bestDistance = Length(bestTrail, dists);
 
-            InitializationCompletedOn(ants, dists, bestTrail, bestDistance);
-            /*
+            InitializationCompletedOn(dists, bestTrail, bestDistance);
+
             int attempt = 0;
-            Stopwatch timer = null;
-            thread = new Thread(new ThreadStart(() =>
+            Stopwatch timer = Stopwatch.StartNew();
+            thread = new Thread(() =>
             {
-                IsStop = false;
                 while (attempt < numberAttempts)
                 {
-                    timer = Stopwatch.StartNew();
                     UpdateAnts(ants, pheromones, dists);
                     UpdatePheromones(pheromones, ants, dists);
 
@@ -148,13 +145,14 @@ namespace AntColonyLib
                     {
                         bestDistance = currBestDistance;
                         bestTrail = currBestTrail;
-                        timer.Stop();
-                        FoundNewBestTrailOn(bestDistance, attempt, timer.ElapsedMilliseconds);
+                        FoundNewBestTrailOn(bestDistance, bestTrail, attempt, timer.ElapsedMilliseconds);
                     }
                     attempt += 1;
                 }
+                timer.Stop();
                 EndAlgorithmOn(bestDistance, bestTrail, timer.ElapsedMilliseconds);
-            }));*/
+            });
+
         }
         #region Стартовая инициализация
         /// <summary>
@@ -429,13 +427,13 @@ namespace AntColonyLib
         private static int[][] MakeGraphDistances(int numCities)
         {
             int[][] dists = new int[numCities][];
-            for (int i = 0; i < dists.Length; i++)
+            for (int i = 0; i <= dists.Length - 1; i++)
             {
                 dists[i] = new int[numCities];
             }
-            for (int i = 0; i < numCities; i++)
+            for (int i = 0; i <= numCities - 1; i++)
             {
-                for (int j = i + 1; j < numCities; j++)
+                for (int j = i + 1; j <= numCities - 1; j++)
                 {
                     int d = random.Next(scatterSD, scatterED);
                     dists[i][j] = d;

@@ -6,18 +6,250 @@
         xmlns:gx="clr-namespace:GraphX;assembly=GraphX.Controls"
         xmlns:local="clr-namespace:AntColonyGUI"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="MainWindow"
+        Title="Муравьиный алгоритм"
         Width="800"
         Height="600"
+        Background="#FF93898F"
+        FontSize="14"
+        Icon="graph.ico"
+        Loaded="Window_Loaded"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
-
-        <graphxctrl:ZoomControl x:Name="zoomctrl" Grid.Row="1">
+        <graphxctrl:ZoomControl x:Name="zoomctrl" Grid.Column="0">
             <local:GraphArea x:Name="Area" />
         </graphxctrl:ZoomControl>
+        <Grid Grid.Column="1">
+            <ListBox x:Name="listBox"
+                     Margin="0,319,0,55"
+                     Background="#FF93898F"
+                     BorderBrush="#FF93898F"
+                     FontSize="10"
+                     IsSynchronizedWithCurrentItem="True"
+                     ItemsSource="{Binding Logs}" />
+
+            <Button x:Name="bStart"
+                    Height="25"
+                    Margin="0,0,15,15"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Click="bStart_Click"
+                    Content="Старт"
+                    Style="{StaticResource ResourceKey=DefaultStyle}"
+                    TabIndex="5" />
+            <Button x:Name="bStop"
+                    Width="75"
+                    Height="25"
+                    Margin="0,0,110,15"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Click="bStop_Click"
+                    Content="Стоп"
+                    IsEnabled="False"
+                    Style="{StaticResource ResourceKey=DefaultStyle}"
+                    TabIndex="4" />
+            <Label x:Name="lAplha"
+                   Margin="10,37,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="alpha:"
+                   Foreground="White" />
+            <TextBox x:Name="tbAlpha"
+                     Width="40"
+                     Height="26"
+                     Margin="57,40,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="3"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lBeta"
+                   Margin="105,37,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="beta:"
+                   Foreground="White" />
+            <TextBox x:Name="tbBeta"
+                     Width="40"
+                     Height="26"
+                     Margin="145,40,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="2"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lRho"
+                   Margin="23,77,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="rho:"
+                   Foreground="White" />
+            <TextBox x:Name="tbRho"
+                     Width="40"
+                     Height="26"
+                     Margin="57,80,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="0,01"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lQ"
+                   Margin="121,77,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="Q:"
+                   Foreground="White" />
+            <TextBox x:Name="tbQ"
+                     Width="40"
+                     Height="26"
+                     Margin="145,80,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="2,0"
+                     TextWrapping="Wrap" />
+            <GroupBox x:Name="groupBox1"
+                      Height="110"
+                      Margin="5,5,5,0"
+                      VerticalAlignment="Top"
+                      Header="Коэффициенты:"
+                      Style="{StaticResource ResourceKey=GroupBoxDefaultStyle}" />
+            <GroupBox x:Name="groupBox2"
+                      Height="194"
+                      Margin="5,120,5,0"
+                      VerticalAlignment="Top"
+                      Header="Поиск:"
+                      Style="{StaticResource ResourceKey=GroupBoxDefaultStyle}" />
+            <Label x:Name="lNumberCity"
+                   Margin="10,154,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="Кол. городов:"
+                   Foreground="White" />
+            <TextBox x:Name="tbNumberCity"
+                     Width="63"
+                     Height="26"
+                     Margin="122,156,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="30"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lNumberAnts"
+                   Margin="10,185,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="Кол. муравьёв:"
+                   Foreground="White" />
+            <TextBox x:Name="tbNumberAnts"
+                     Width="63"
+                     Height="26"
+                     Margin="122,187,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="10"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lAttempts"
+                   Margin="10,215,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="Кол. попыток:"
+                   Foreground="White" />
+            <TextBox x:Name="tbAttempts"
+                     Width="63"
+                     Height="26"
+                     Margin="122,218,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="200"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lDS"
+                   Margin="10,248,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="Растояния нач.:"
+                   Foreground="White" />
+            <TextBox x:Name="tbDS"
+                     Width="63"
+                     Height="26"
+                     Margin="122,250,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="1"
+                     TextWrapping="Wrap" />
+            <Label x:Name="lDE"
+                   Margin="11,279,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Content="Растояния кон.:"
+                   Foreground="White" />
+            <TextBox x:Name="tbDE"
+                     Width="63"
+                     Height="26"
+                     Margin="122,281,0,0"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top"
+                     Background="WhiteSmoke"
+                     BorderBrush="Black"
+                     Padding="2"
+                     SelectionBrush="#FF93898F"
+                     Text="9"
+                     TextWrapping="Wrap" />
+        </Grid>
     </Grid>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:Log}">
+            <StackPanel Margin="3">
+                <DockPanel>
+                    <TextBlock Margin="5,0,5,0"
+                               DockPanel.Dock="Left"
+                               FontStyle="Italic"
+                               Text="{Binding Time}" />
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock Margin="5,0,5,0"
+                               DockPanel.Dock="Left"
+                               FontWeight="Bold"
+                               Text="{Binding Message}" />
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock Margin="5,0,5,0"
+                               DockPanel.Dock="Left"
+                               FontWeight="Bold"
+                               Text="{Binding Attempt}" />
+                </DockPanel>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
 </Window>
