@@ -15,6 +15,8 @@ namespace AntColonyGUI
     public partial class MainWindow : Window, IDisposable
     {
         private Graph graph;
+        private int[] bestTrail;
+        private List<DataEdge> edges;
 
         public MainWindow()
         {
@@ -32,12 +34,12 @@ namespace AntColonyGUI
         {
             var LogicCore = new GXLogicCore() { Graph = graph };
 
-            LogicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.FR;
+            LogicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.KK;
 
             LogicCore.DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
             LogicCore.DefaultOverlapRemovalAlgorithmParams = LogicCore.AlgorithmFactory.CreateOverlapRemovalParameters(OverlapRemovalAlgorithmTypeEnum.FSA);
-            ((OverlapRemovalParameters)LogicCore.DefaultOverlapRemovalAlgorithmParams).HorizontalGap = 50;
-            ((OverlapRemovalParameters)LogicCore.DefaultOverlapRemovalAlgorithmParams).VerticalGap = 50;
+            ((OverlapRemovalParameters)LogicCore.DefaultOverlapRemovalAlgorithmParams).HorizontalGap = 100;
+            ((OverlapRemovalParameters)LogicCore.DefaultOverlapRemovalAlgorithmParams).VerticalGap = 100;
 
             LogicCore.DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
             LogicCore.AsyncAlgorithmCompute = true;
@@ -49,46 +51,68 @@ namespace AntColonyGUI
             var antColony = new AntColony();
             antColony.InitializationCompletedOn += AntColony_InitializationCompletedOn;
             antColony.FoundNewBestTrailOn += AntColony_FoundNewBestTrailOn;
-            antColony.Start(6, 4, 200, 1, 9);
+            
+            graph = new Graph();
+            Area.SetEdgesDashStyle(EdgeDashStyle.Dot);
+            Area.LogicCore = GetGraphArea(graph);
+
+            antColony.Start(60, 4, 200, 1, 9);
         }
 
         private void AntColony_InitializationCompletedOn(int[][] ants, int[][] dists, int[] bestTrail, double bestDistance)
         {
-            graph = new Graph();
+            this.bestTrail = bestTrail;
+            
             //Количество вершин равное количеству городов
-            for (int i = 0; i < dists.Length; i++)
+            for (int i = 1; i < dists.Length + 1; i++)
             {
                 graph.AddVertex(new DataVertex(i.ToString()) { ID = i });
             }
 
             var listVertex = graph.Vertices.ToList();
             //Соединим виршины каждую с каждой
-
-            for (int i = 0; i < (listVertex.Count * (listVertex.Count - 1) / 2); i++)
+            /*
+            for (int i = 1; i < listVertex.Count + 1; i++)
             {
-                graph.AddEdge(new DataEdge(listVertex[i], listVertex[i + 1]));
-            }
-            
+                for (int j = i; j < listVertex.Count + 1; j++)
+                {
+                    if (i != j)
+                        graph.AddEdge(new DataEdge(listVertex[i - 1], listVertex[j - 1])
+                        { Weight = dists[i - 1][j - 1] });
+                }
+                
+            }*/
+            edges = new List<DataEdge>(bestTrail.Length - 1);
             for (int i = 0; i < bestTrail.Length - 1; i++)
             {
-                graph.AddEdge(new DataEdge(listVertex[bestTrail[i]], listVertex[bestTrail[i + 1]]));
+                var vertA = listVertex[bestTrail[i]];
+                var vertB = listVertex[bestTrail[i + 1]];
+                var edge = new DataEdge(vertA, vertB);
+                graph.AddEdge(edge);
+                edges.Add(edge);
             }
 
-            Area.LogicCore = GetGraphArea(graph);
             Area.GenerateGraph(true, true);
-            Area.SetEdgesDashStyle(EdgeDashStyle.Dot);
-            Area.ShowAllEdgesArrows(false);
-            Area.ShowAllEdgesLabels(true);
+            Area.GenerateGraphFinished += Area_GenerateGraphFinished;
+        }
 
-            var edges = Area.EdgesList.Values;
-            foreach (var edge in edges.Skip(Area.EdgesList.Count - bestTrail.Length))
+        private void Area_GenerateGraphFinished(object sender, EventArgs e)
+        {
+            foreach (var control in Area.EdgesList.Values)
             {
-                edge.ShowArrows = true;
-                edge.DashStyle = EdgeDashStyle.Solid;
+                control.ShowArrows = false;
+                //control.DashStyle = EdgeDashStyle.Dot;
+                control.ShowLabel = false;
+            }
+            foreach (var edge in edges)
+            {
+                var control = Area.EdgesList[edge];
+                control.ShowArrows = true;
+                //control.DashStyle = EdgeDashStyle.Solid;
+                control.ShowLabel = true;
             }
 
-            ZoomControl.SetViewFinderVisibility(zoomctrl, System.Windows.Visibility.Visible);
-            zoomctrl.ZoomToFill();
+            zoomctrl.ZoomToOriginal();
         }
 
         private void AntColony_FoundNewBestTrailOn(double bestDistance, int attempt, long timerElapsedMilliseconds)
