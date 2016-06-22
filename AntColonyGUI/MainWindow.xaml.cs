@@ -196,9 +196,9 @@ namespace AntColonyGUI
             bStart.IsEnabled = false;
             bStop.IsEnabled = true;
 
-            if (tbAlpha.Text == "" &&
-                tbBeta.Text == "" &&
-                tbQ.Text == "" &&
+            if (tbAlpha.Text == "" ||
+                tbBeta.Text == "" ||
+                tbQ.Text == "" ||
                 tbRho.Text == ""
                 )
             {
@@ -208,10 +208,10 @@ namespace AntColonyGUI
                 bStop.IsEnabled = false;
                 return;
             }
-            if (tbDE.Text == "" &&
-                tbDS.Text == "" &&
-                tbNumberAnts.Text == "" &&
-                tbNumberCity.Text == "" &&
+            if (tbDE.Text == "" ||
+                tbDS.Text == "" ||
+                tbNumberAnts.Text == "" ||
+                tbNumberCity.Text == "" ||
                 tbAttempts.Text == ""
                 )
             {
@@ -249,9 +249,9 @@ namespace AntColonyGUI
                 bStop.IsEnabled = false;
                 return;
             }
-            if (alpha <= 0 &&
-                beta <= 0 &&
-                Q <= 0 &&
+            if (alpha <= 0 ||
+                beta <= 0 ||
+                Q <= 0 ||
                 rho <= 0
                 )
             {
@@ -291,10 +291,10 @@ namespace AntColonyGUI
                 bStop.IsEnabled = false;
                 return;
             }
-            if (de <= 0 &&
-                ds <= 0 &&
-                numberAnts <= 0 &&
-                attempts <= 0 &&
+            if (de <= 0 ||
+                ds <= 0 ||
+                numberAnts <= 0 ||
+                attempts <= 0 ||
                 numberCity <= 0
                 )
             {
